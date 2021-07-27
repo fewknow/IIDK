@@ -6,13 +6,13 @@ workflows:
                 context: fewknow
                 filters:
                     branches:
-                        only: master
+                        only: main
             - "release":
                 requires:
                     - "build"
                 filters:
                     branches:
-                        only: master
+                        only: main
 orbs:
     github-release: h-matsuo/github-release@0.1.1
 jobs:
