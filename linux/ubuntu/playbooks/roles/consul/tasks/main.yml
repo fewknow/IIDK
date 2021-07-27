@@ -1,0 +1,14 @@
+---
+- include: consul_setup.yml
+
+- include: consul_vagrant.yml
+  when: vagrant and not cli
+
+- include: consul.yml
+  when: not vagrant and not cli
+
+- include: init.yml
+  when: not cli
+
+- include: cli.yml
+  when: cli

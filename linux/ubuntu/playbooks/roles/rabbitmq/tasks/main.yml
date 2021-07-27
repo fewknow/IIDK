@@ -1,0 +1,73 @@
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc
+    state: present
+
+- name: add apt erlang repository
+  apt_repository:
+    repo: "deb https://dl.bintray.com/rabbitmq-erlang/debian bionic erlang-21.x"
+    update_cache: yes
+    state: present
+
+- name: add apt rabbitmq repository
+  apt_repository:
+    repo: "deb https://dl.bintray.com/rabbitmq/debian bionic main"
+    update_cache: yes
+    state: present
+
+- name: apt preference
+  copy:
+    src: files/apt_preference
+    dest: /etc/apt/preferences.d/erlang
+    force: yes
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: install erlang
+  apt:
+    name: erlang-nox
+    state: present
+
+- name: install rabbit-server
+  apt:
+    name: rabbitmq-server={{ rabbitmq_server_version }}
+    state: present
+
+- name: Enables the rabbitmq_management plugin
+  rabbitmq_plugin:
+    names: '{{ rabbit_plugins | join(",") }}'
+    state: enabled
+  when: rabbit_plugins != []
+
+- name: rabbit default config
+  copy:
+    src: files/rabbitmq
+    dest: /etc/rabbitmq/rabbitmq.conf
+    owner: rabbitmq
+    group: rabbitmq
+    mode: u=rw,g=r,o=r
+    force: yes
+
+# RabbitMQ RPM installation starts the rabbitmq-server automatically,
+  # so stopping the service and disabling start on boot
+- name: Stop and disable Rabbit Server on startup
+  service:
+    enabled: no
+    name: rabbitmq-server
+    state: stopped
+
+- name: Ansible delete file wildcard
+  find:
+    paths: /var/log/rabbitmq
+    patterns: "*.log"
+  register: wildcard_files_to_delete
+
+- name: Ansible remove file wildcard
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ wildcard_files_to_delete.files }}"

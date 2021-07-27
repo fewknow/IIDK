@@ -1,0 +1,16 @@
+repos:
+  name:
+    - https://bitbucket.org/fewknow/devops.infra.vpc.git
+    - https://bitbucket.org/fewknow/devops.infra.management_account.git
+    - https://bitbucket.org/fewknow/devops.infra.account.git
+    - https://bitbucket.org/fewknow/devops.infra.api_utility.git
+    - https://bitbucket.org/fewknow/devops.infra.app_iam.git
+    - https://bitbucket.org/fewknow/devops.infra.app_security.git
+    - https://bitbucket.org/fewknow/devops.infra.buckets.git
+    - https://bitbucket.org/fewknow/devops.infra.consul.git
+    - https://bitbucket.org/fewknow/devops.infra.data.git
+    - https://bitbucket.org/fewknow/devops.infra.logstash.git
+    - https://bitbucket.org/fewknow/devops.infra.modules.git
+    - https://bitbucket.org/fewknow/devops.infra.security.git
+    - https://bitbucket.org/fewknow/devops.infra.tool_utility.git
+    - https://bitbucket.org/fewknow/devops.infra.user_iam.git

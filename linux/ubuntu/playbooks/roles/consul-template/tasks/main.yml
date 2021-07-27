@@ -1,0 +1,33 @@
+---
+- name: Install Consul Template from URL
+  unarchive:
+    src: https://releases.hashicorp.com/consul-template/{{ consul_template.version }}/consul-template_{{ consul_template.version }}_linux_amd64.zip
+    dest: "{{ consul_template.deploy_dir }}"
+    remote_src: yes
+    validate_certs: false
+
+- name: Set permissions on Consul Template
+  file:
+    path: "{{ consul_template.deploy_dir }}/consul-template"
+
+- name: Create directories
+  file:
+    state: "directory"
+    path: "{{ item.destination }}"
+    mode: 0600
+  with_items:
+    - { destination: "{{ consul_template.config_dir }}"}
+    - { destination: "{{ consul_template.app_dir }}" }
+
+- include: ubuntu_14.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+
+- include: ubuntu_18.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
+
+- name: Start consul-template and enable on start up
+  service:
+    name: consul-template
+    enabled: yes
+    state: started
+  when: startup

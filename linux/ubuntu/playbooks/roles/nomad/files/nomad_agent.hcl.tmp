@@ -1,0 +1,41 @@
+data_dir = "/etc/nomad.d"
+
+client {
+  enabled       = true
+  options   = {
+    "docker.auth.config"     = "/etc/docker/config.json"
+    "docker.auth.helper"     = "ecr-login"
+  }
+}
+
+# You do not need to add this to your configuration file. This is an example
+# that is part of Nomad's internal default configuration for Consul integration.
+consul {
+  # The address to the Consul agent.
+  address = "127.0.0.1:8500"
+
+  # The service name to register the server and client with Consul.
+  server_service_name = "nomad"
+  client_service_name = "nomad-client"
+
+  # Enables automatically registering the services.
+  auto_advertise = true
+
+  # Enabling the server and client to bootstrap using Consul.
+  server_auto_join = true
+  client_auto_join = true
+}
+
+vault {
+ enabled = true
+ address = "{{ vault_url_port }}"
+}
+
+datacenter = "{{ region }}"
+
+telemetry {
+  publish_allocation_metrics = true
+  publish_node_metrics       = true
+  datadog_address = "localhost:8125"
+  disable_hostname = true
+}

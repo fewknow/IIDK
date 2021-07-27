@@ -1,0 +1,5 @@
+init_config:
+instances:
+  - use_mount: false
+    device_blacklist:
+      - \/dev\/loop[0-9]+

@@ -1,0 +1,11 @@
+---
+- name: Get fewknow Root certificate
+  aws_s3:
+    bucket: '{{ s3bucket }}'
+    object: /ssl/fewknow-root.crt
+    dest: /usr/local/share/ca-certificates/fewknow-root.crt
+    mode: get
+- name: Add fewknow Root Certificate
+  command: update-ca-certificates
+  become: true
+  become_user: root

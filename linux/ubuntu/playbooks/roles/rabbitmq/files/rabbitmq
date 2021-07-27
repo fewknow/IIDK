@@ -1,0 +1,20 @@
+##
+## defaults
+default_user = fewknow
+default_pass = @replace@
+default_user_tags.administrator = true
+default_permissions.configure = .*
+default_permissions.read = .*
+default_permissions.write = .*
+##
+## Clustering
+## =====================
+##
+cluster_formation.peer_discovery_backend = rabbit_peer_discovery_aws
+cluster_formation.aws.region = us-east-1
+cluster_formation.aws.use_autoscaling_group = true
+cluster_formation.aws.use_private_ip = true
+
+# cluster_formation.node_type = disc
+# cluster_partition_handling = ignore
+# cluster_keepalive_interval = 10000

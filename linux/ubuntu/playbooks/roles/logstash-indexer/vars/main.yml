@@ -1,0 +1,2 @@
+logstash_indexer_path: /etc/logstash/conf.d
+consul_template_path: /etc/consul-template.d

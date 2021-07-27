@@ -1,0 +1,4 @@
+- name: install anypoint-cli with npm
+  npm:
+    name: anypoint-cli
+    global: yes

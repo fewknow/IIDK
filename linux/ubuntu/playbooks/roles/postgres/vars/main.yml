@@ -1,0 +1,4 @@
+packages:
+  install:
+    - postgresql
+    - postgresql-contrib

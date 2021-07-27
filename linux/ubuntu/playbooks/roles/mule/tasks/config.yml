@@ -1,0 +1,39 @@
+---
+
+  # Add entry to pam.d/commmon-session after existing entry
+- name: Insert a new rule after an existing rule
+  pamd:
+    name: common-session
+    type: session
+    control: optional
+    module_path: pam_systemd.so
+    new_type: session
+    new_control: required
+    new_module_path: pam_limits.so
+    state: after
+
+  # Add or modify nofile soft limit for the user mule
+- pam_limits:
+    domain: mule
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+
+  # Add or modify nofile hard limit for the user
+- pam_limits:
+    domain: mule
+    limit_type: hard
+    limit_item: nofile
+    value: 65535
+
+- pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nofile
+    value: 65535
+
+- pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: 65535

@@ -1,0 +1,22 @@
+---
+
+- name: Download GO
+  get_url:
+    url: https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    dest: /tmp/go1.10.3.linux-amd64.tar.gz
+    validate_certs: no
+    mode: 0644
+
+- name: Unarchive GO to /usr/local
+  unarchive:
+    src: /tmp/go1.10.3.linux-amd64.tar.gz
+    dest: /usr/local/
+    remote_src: yes
+    owner: root
+    group: root
+
+- name: Set the GO_PATH
+  shell: sudo echo "export GOPATH=$HOME/work" >> ~/.profile && export GOPATH=$HOME/work
+
+- name: Set PATH for GO
+  shell: sudo echo "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin" >> ~/.profile && export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin

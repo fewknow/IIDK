@@ -1,0 +1,163 @@
+---
+- name: Install required packages
+  apt:
+    pkg: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ packages.install }}"
+
+- name: Purge unwanted packages
+  apt:
+    pkg: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items: "{{ packages.purge }}"
+
+- name: Pip required packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ pip.install }}"
+
+- name: Remove .deny files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/at.deny
+    - /etc/cron.deny
+
+- name: Copy .allow files
+  file:
+    state: touch
+    dest: "{{ item }}"
+    mode: 0600
+    owner: root
+    group: root
+  with_items:
+    - /etc/at.allow
+    - /etc/cron.allow
+
+- name: Set permissions on crontab
+  file:
+    path: /etc/crontab
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Set permissions on cron directories
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: 0700
+    owner: root
+    group: root
+  with_items:
+    - /etc/cron.daily
+    - /etc/cron.weekly
+    - /etc/cron.monthly
+    - /etc/cron.d
+
+- name: Create fstab file
+  copy:
+    src: fstab
+    dest: /etc/fstab
+    mode: 0644
+    owner: root
+    group: root
+  register: fstab
+  when: not vagrant
+
+- name: Mount drives
+  command: /bin/mount --all
+  when: fstab.changed and not vagrant
+
+- name: Set permissions on grub configuration file
+  file:
+    path: /boot/grub/grub.cfg
+    mode: 0400
+    owner: root
+    group: root
+  when: not container
+
+- name: Create limits.conf file
+  copy:
+    src: limits.conf
+    dest: /etc/security/limits.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Update umask file
+  lineinfile:
+    dest: /etc/login.defs
+    regexp: UMASK\s+022
+    line: "UMASK 077"
+    state: present
+
+- name: Copy motd files
+  copy:
+    src: motd
+    dest: "{{ item }}"
+    mode: 0644
+    owner: root
+    group: root
+  with_items:
+    - /etc/motd
+    - /etc/issue
+    - /etc/issue.net
+
+- name: Copy ntp configuration
+  copy:
+    src: ntp.conf
+    dest: /etc/ntp.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: Enable ntp
+
+- name: Copy pam configuration
+  copy:
+    src: pam.d-su
+    dest: /etc/pam.d/su
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Copy sshd configuration
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Copy sysctl configuration
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Create libuuid user
+  user:
+    name: libuuid
+    shell: /usr/sbin/nologin
+
+- name: copy env variables
+  copy:
+    src: files/set-envr.sh
+    dest: /etc/profile.d/set-envr.sh
+    force: yes
+
+- name: Ensure a locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: set timezone to New_York (EST)
+  timezone:
+   name: America/New_York
+  become: yes
+  become_method: sudo

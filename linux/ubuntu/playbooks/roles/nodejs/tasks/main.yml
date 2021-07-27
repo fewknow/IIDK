@@ -1,0 +1,26 @@
+---
+- name: Install nodejs
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: creating sym link
+  shell: ln -s /usr/bin/nodejs /usr/bin/node
+  when: container and not vagrant
+
+- name: creating sudo sym link
+  shell: sudo ln -s /usr/bin/nodejs /usr/bin/node
+  when: not container or vagrant
+
+- name: Install npm
+  apt:
+    name: npm
+    state: present
+    update_cache: yes
+
+- name: Install node version manager
+  shell: npm install n -g
+
+- name: Upgrade node to stable version
+  shell: n stable

@@ -1,0 +1,11 @@
+---
+
+- name: Copy Consul vagrant configuration files
+  template:
+    owner: consul
+    group: consul 
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: roles/consul/files/consul.conf, destination: /etc/init }
+    - { source: "roles/consul/files/{{ config_file }}_vagrant.json.j2" , destination: "/etc/consul.d/{{ config_file }}_vagrant.json" }

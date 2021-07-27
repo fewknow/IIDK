@@ -1,0 +1,1 @@
+{"virtualbox":{"/root/.aws":{"guestpath":"/root/.aws","hostpath":"/Users/fewknow/.aws","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/fewknow/Documents/repos/DOU/linedecision/line-decision-assessment-ami/linux/ubuntu","disabled":false,"__vagrantfile":true}}}

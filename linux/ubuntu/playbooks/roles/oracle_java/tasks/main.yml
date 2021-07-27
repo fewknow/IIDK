@@ -1,0 +1,36 @@
+# ---
+# - name: Install add-apt-repostory
+#   apt:
+#     name: software-properties-common
+#     state: latest
+#
+# - name: Add Oracle Java Repository
+#   apt_repository:
+#     repo: 'ppa:webupd8team/java'
+#     validate_certs: false
+#
+# - name: Accept Java {{ java.version }} License
+#   debconf:
+#     name: 'oracle-java{{ java.version }}-installer'
+#     question: 'shared/accepted-oracle-license-v1-1'
+#     value: 'true'
+#     vtype: 'select'
+#
+# - name: Install Oracle Java {{ java.version }}
+#   apt:
+#     name: "{{item}}"
+#     state: present
+#     update_cache: yes
+#   with_items:
+#     - oracle-java{{ java.version }}-installer
+#     - ca-certificates
+#     - oracle-java{{ java.version }}-set-default
+
+- name : Download .tar of java 8
+  get_url:
+    url: http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/jdk-8u192-linux-x64.tar.gz
+    dest: /var/lib
+    headers: Cookie: oraclelicense=accept-securebackup-cookie
+
+- name: un tar and install java 8
+  shell: tar zxvf /var/lib/jdk-8uversion-linux-x64.tar.gz

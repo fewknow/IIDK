@@ -1,0 +1,33 @@
+filebeat:
+  inputs:
+    - type: log
+      paths:
+        - /opt/mule/logs/*.log
+        - /var/log/sys.log
+      tags: [mule]
+    - type: log
+      paths:
+        - /var/log/filebeat/filebeat
+      tags: [filebeat]
+    - type: log
+      paths:
+        - /var/log/consul-template_init.log
+      tags: [consul-template]
+    - type: log
+      paths:
+        - /var/log/consul.log
+      tags: [consul]
+ {{ range $key, $pairs := tree "config" | byKey }}
+    - type: log
+      paths:
+        - /var/log/*/{{ $key }}.log
+        - /var/log/{{ $key }}.log
+      tags: [{{ $key }}, mule_cluster]
+    {{ end }}
+
+  processors:
+     - drop_fields:
+       fields: ["host"]
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["logstash.{{ env }}.fewknow.net:5044"]

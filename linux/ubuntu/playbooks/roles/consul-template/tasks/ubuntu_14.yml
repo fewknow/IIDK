@@ -1,0 +1,6 @@
+- name: Copy Upstart script
+  copy:
+    src: consul-template.conf
+    dest: /etc/init/consul-template.conf
+    mode: 0755
+  when: startup

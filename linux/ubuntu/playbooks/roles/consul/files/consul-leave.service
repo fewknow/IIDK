@@ -1,0 +1,16 @@
+[Unit]
+Description=Run consul leave at instance shutdown
+Requires=network.target
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/bin/true
+ExecStop=/usr/bin/consul leave
+StandardOutput=file:/var/log/consul.log
+StandardError=file:/var/log/consul_error.log
+
+[Install]
+WantedBy=multi-user.target

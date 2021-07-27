@@ -1,0 +1,81 @@
+---
+- name: Download Logstash
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/logstash/logstash-{{ logstash_version }}.tar.gz"
+    dest: /tmp/
+    validate_certs: no
+
+- name: Unarchive logstash and move to /opt
+  unarchive:
+    remote_src: yes
+    src: /tmp/logstash-{{ logstash_version }}.tar.gz
+    dest: /opt/
+
+- name : Rename logstash
+  shell: mv /opt/logstash-{{ logstash_version }} /opt/logstash
+
+- name: Create Logstash Group
+  group:
+      name: logstash
+      state: present
+
+- name: Create logstash user
+  user:
+    name: logstash
+    comment: "Used to run logstash binaries"
+    group: logstash
+
+- name: Create /etc/logstash/
+  file:
+    path: /etc/logstash
+    state: directory
+    mode: 0644
+    owner: logstash
+    group: logstash
+
+- name: Create /etc/logstash/conf.d
+  file:
+    path: /etc/logstash/conf.d
+    state: directory
+    owner: logstash
+    group: logstash
+    mode: 0644
+
+- name: Override logstash.yml file.
+  copy:
+    src: files/logstash.yml
+    dest: /opt/logstash/config/logstash.yml
+    force: yes
+
+- name: Create logstash group
+  group:
+    name: logstash
+    state: present
+
+- name: Create logstash user
+  user:
+    name: logstash
+    group: logstash
+    groups: root
+    comment: User for logstash service
+
+- name: Create /user/share/logstash
+  file:
+    path: /user/share/logstash
+    owner: logstash
+    group: logstash
+    mode: 0700
+    state: directory
+
+- include: ubuntu_14.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+
+- include: ubuntu_18.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
+
+- name: enable logstash and start service
+  service:
+    name: logstash
+    state: started
+    enabled: yes
+  ignore_errors: yes

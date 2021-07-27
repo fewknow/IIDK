@@ -1,0 +1,17 @@
+[Unit]
+Description=Logstash
+Documentation=https://www.elastic.co/products/logstash
+After=network.target
+ConditionPathExists=/etc/logstash/conf.d/logstash.conf
+
+[Service]
+User=root
+Group=root
+ExecStart=/opt/logstash/bin/logstash -f /etc/logstash/conf.d/logstash.conf
+KillSignal=SIGINT
+Restart=on-failure
+StandardOutput=file:/var/log/logstash_init.log
+StandardError=file:/var/log/logstash_error.log
+
+[Install]
+WantedBy=multi-user.target

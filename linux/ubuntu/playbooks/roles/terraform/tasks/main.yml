@@ -1,0 +1,7 @@
+- name: Download and Install Hashicorp Terraform {{ version }}
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/{{ version }}/terraform_{{ version }}_linux_amd64.zip
+    dest: /usr/bin/
+    validate_certs: no
+    mode: 0755
+    remote_src: yes

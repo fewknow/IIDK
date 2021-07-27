@@ -1,0 +1,10 @@
+---
+- name: Install dependency for docker
+  shell: apt-get install libsystemd-journal0
+
+- name: Download docker .deb
+  shell: wget --no-check https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/{{ version }} -P /tmp
+
+- name: Install docker
+  apt:
+    deb: /tmp/{{ version }}

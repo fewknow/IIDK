@@ -1,0 +1,7 @@
+---
+- name: Install dependencies
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - requests
+    - https://downloads.veracode.com/securityscan/hmac/python/security_apisigning_python-17.9.1-py2-none-any.whl

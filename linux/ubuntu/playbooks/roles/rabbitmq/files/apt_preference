@@ -1,0 +1,3 @@
+Package: erlang* rabbitmq*
+Pin: release o=Bintray
+Pin-Priority: 1000

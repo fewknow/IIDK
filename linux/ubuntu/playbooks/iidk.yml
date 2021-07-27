@@ -1,0 +1,6 @@
+---
+- hosts: iidk
+  become: true
+  user: ubuntu
+  roles:
+    - iidk

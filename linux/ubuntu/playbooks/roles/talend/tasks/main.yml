@@ -1,0 +1,38 @@
+- name: Create ci_build directory
+  file:
+    path: /opt/talend/ci_build/
+    state: directory
+    mode: 0755
+
+- name: Get talend cli zip
+  aws_s3:
+    bucket: cv-mgmt-talend
+    object: /artifacts/Talend-CI-Builder-20170623_1246-V{{ version }}.zip
+    dest: /opt/talend/ci_build/Talend-CI-Builder-20170623_1246-V{{ version }}.zip
+    mode: get
+
+
+- name: Get cmdline zip
+  aws_s3:
+    bucket: cv-mgmt-talend
+    object: /artifacts/cmdline.zip
+    dest: /opt/talend/ci_build/cmdline.zip
+    mode: get
+
+- name: Unzip both files
+  shell: cd /opt/talend/ci_build && unzip cmdline.zip && unzip Talend-CI-Builder-20170623_1246-V{{ version }}.zip
+
+- name: Run command to install CLI
+  shell: mvn install:install-file -Dfile="/opt/talend/ci_build/Talend-CI-Builder-20170623_1246-V6.4.1/ci.builder-6.4.1.jar" -DpomFile="/opt/talend/ci_build/Talend-CI-Builder-20170623_1246-V6.4.1/ci.builder-6.4.1.pom"
+
+- name: Create git_project directory
+  file:
+    path: /opt/talend/ci_build/git_project
+    state: directory
+    mode: 0755
+
+- name: Create project_source directory
+  file:
+    path: /opt/talend/ci_build/project_source
+    state: directory
+    mode: 0755

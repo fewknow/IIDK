@@ -1,0 +1,40 @@
+{
+  "retry_join": ["provider=aws  tag_key=consul_cluster tag_value={{ cluster_name }}"],
+
+  "ports": {
+    "https": 8501
+  },
+
+  "node_name": "{{ instance_id }}",
+
+  "data_dir": "/opt/consul/data",
+  "ui": true,
+  "client_addr": "0.0.0.0",
+
+  "leave_on_terminate": true,
+  "skip_leave_on_interrupt": true,
+
+  "encrypt": "{{ encrypt_key }}",
+
+  "server": true,
+  "bootstrap_expect": {{ consul_bootstrap_expect }},
+
+  "datacenter": "{{ datacenter }}",
+  "primary_datacenter": "{{ primary_datacenter }}",
+
+  "acl": {
+    "enabled": true,
+    "default_policy": "deny",
+    "down_policy": "allow",
+    "enable_token_persistence": true,
+    "tokens": {
+      "master": "{{ acl_master_token }}",
+      "agent": "{{ acl_agent_token }}",
+      "default": "{{ acl_default_token }}"
+    }
+  },
+  "autopilot": {
+    "cleanup_dead_servers": true
+  }
+
+}

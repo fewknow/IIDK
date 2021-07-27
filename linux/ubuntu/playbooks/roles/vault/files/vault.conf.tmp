@@ -1,0 +1,18 @@
+storage "consul" {
+  address       = "{{ consul_address }}"
+  path          = "vault/"
+  token         = "{{ vault_consul_token }}"
+  redirect_addr = "{{ vault_address }}"
+}
+
+listener "tcp" {
+  address     = "0.0.0.0:8200"
+  tls_disable = 1
+  tls_min_version = "tls12"
+  tls_cert_file = "/etc/certs/vault.crt"
+  tls_key_file = "/etc/certs/vault.key"
+}
+
+cluster_name = "{{ cluster_name }}"
+default_lease_ttl = "12h"
+max_lease_ttl = "12h"

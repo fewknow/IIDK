@@ -1,0 +1,14 @@
+---
+- name: Install dnsmasq
+  apt:
+    pkg: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - dnsmasq-base
+    - dnsmasq
+
+- name: Upload dnsmasq configuration
+  copy:
+    src: consul
+    dest: /etc/dnsmasq.d

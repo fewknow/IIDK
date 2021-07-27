@@ -1,0 +1,6 @@
+consul_template:
+  version: 0.19.3
+  deploy_dir: /usr/bin
+  config_dir: /etc/consul-template.d
+  app_dir: /opt/consul-template
+startup: true

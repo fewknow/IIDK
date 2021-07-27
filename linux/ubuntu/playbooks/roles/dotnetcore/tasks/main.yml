@@ -1,0 +1,23 @@
+---
+- name: Make sure that apt-transport-https is installed
+  apt:
+    name: "apt-transport-https"
+    state: present
+
+- name: Add .NET Core repository and update apt cache
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main"
+    update_cache: yes
+    state: present
+
+- name: Add .NET Core repository key
+  apt_key:
+    id: "417A0893"
+    keyserver: "hkp://keyserver.ubuntu.com:80"
+    state: present
+
+- name: Install .NET Core
+  apt:
+    name: "{{ package_name }}"
+    state: latest
+    allow_unauthenticated: yes

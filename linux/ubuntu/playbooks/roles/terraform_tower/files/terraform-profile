@@ -1,0 +1,66 @@
+##########
+# COLORS #
+##########
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+echo "${red}red text ${green}green text${reset}"
+
+####################
+# GIT AWARE PROMPT #
+###################
+export GITAWAREPROMPT=~/.bash/git-aware-prompt
+source "${GITAWAREPROMPT}/main.sh"
+
+########################
+# Branch and workspace #
+#######################
+alias develop="git checkout develop && git pull && echo '${red}Switch your terraform workspace if needed${reset}' && terraform workspace list"
+alias qa="git checkout qa && git pull && echo '${red}Switch your terraform workspace if needed${reset}' && terraform workspace list"
+alias stage="git checkout stage && git pull && echo '${red}Switch your terraform workspace if needed${reset}' && terraform workspace list"
+alias master="git checkout master && git pull && echo '${red}Switch your terraform workspace if needed${reset}' && terraform workspace list"
+alias jump="cd ~/.ssh &&  ssh -i mgmt.pem ec2-user@10.90.64.97"
+alias tdev="terraform apply -var 'workspace=development'"
+alias tqa="terraform apply -var 'workspace=qa'"
+alias tstage="terraform apply -var 'workspace=stage'"
+alias tprod="terraform apply -var 'workspace=prod'"
+alias cdev="terraform apply -var-file=dev.tfvars"
+alias cqa="terraform apply -var-file=qa.tfvars"
+alias cstage="terraform apply -var-file=stage.tfvars"
+alias cprod="terraform apply -var-file=prod.tfvars"
+alias tmgmt="terraform apply -var 'workspace=mgmt'"
+
+
+##############
+# NAVIGATION #
+#############
+repos_home="~/Documents/repos/"
+alias ans="cd ~/Documents/repos/devops.artifacts/ansible/linux/ubuntu/"
+alias gt="cd ~/Documents/repos/"
+alias config="cd ${repos_home}devops.config"
+alias ci="cd ${repos_home}devops.ci"
+alias account="cd ${repos_home}devops.infra.account"
+alias api="cd ${repos_home}devops.infra.api_utility"
+alias app="cd ${repos_home}devops.infra.app_iam"
+alias appsc="cd ${repos_home}devops.infra.app_security"
+alias buckets="cd ${repos_home}devops.infra.buckets"
+alias consul="cd ${repos_home}devops.infra.consul"
+alias data="cd ${repos_home}devops.infra.data"
+alias logstash="cd ${repos_home}devops.infra.logstash"
+alias mgmt="cd ${repos_home}devops.infra.management_account"
+alias mod="cd ${repos_home}devops.infra.modules"
+alias sc="cd ${repos_home}devops.infra.security"
+alias tool="cd ${repos_home}devops.infra.tool_utility"
+alias user="cd ${repos_home}devops.infra.user_iam"
+alias vpc="cd ${repos_home}devops.infra.vpc"
+#alias gt="cd ${repos_home}devops.infra"
+#alias gt="cd ${repos_home}devops.infra"
+
+
+###########
+# PROMPTS #
+###########
+
+export PS1="\u@\h \W \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
+
+export SUDO_PS1="\[$bakred\]\u@\h\[$txtrst\] \w\$ "

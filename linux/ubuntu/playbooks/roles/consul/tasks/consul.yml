@@ -1,0 +1,9 @@
+---
+- name: Copy Consul configuration files as .tmp
+  copy:
+    owner: consul
+    group: consul
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: "{{ config_file }}.json.tmp" , destination: /etc/consul.d/ }

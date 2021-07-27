@@ -1,0 +1,12 @@
+---
+- include: nomad.yml
+  when: not cli
+
+- include: init.yml
+  when: not cli
+
+- include: cli.yml
+  when: cli
+
+- include: agent.yml
+  when: config_file == "nomad_agent"

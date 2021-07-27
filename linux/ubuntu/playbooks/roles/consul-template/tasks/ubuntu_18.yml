@@ -1,0 +1,6 @@
+- name: Copy consul-template servie script
+  template:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: roles/consul-template/files/consul-template.service, destination: /etc/systemd/system }

@@ -1,0 +1,16 @@
+[Unit]
+Description=consul-template service
+Requires=network-online.target
+After=network-online.target consul-template.service
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/consul-template -config=/etc/consul-template.d/consul-template.conf
+KillSignal=SIGINT
+Restart=on-failure
+StandardOutput=file:/var/log/consul-template_init.log
+StandardError=file:/var/log/consul-template_error.log
+
+[Install]
+WantedBy=multi-user.target
