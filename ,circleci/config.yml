@@ -1,0 +1,50 @@
+version: 2.1
+workflows:
+    devops:
+        jobs:
+            - "build":
+                context: fewknow
+                filters:
+                    branches:
+                        only: master
+            - "release":
+                requires:
+                    - "build"
+                filters:
+                    branches:
+                        only: master
+orbs:
+    github-release: h-matsuo/github-release@0.1.1
+jobs:
+    "build":
+        docker:
+            - image: dockerdoufer/aws-docker:circleci0.1
+        steps:
+            - checkout
+            - run:
+                name: Run Bump Tag
+                command: |
+                    chmod +x version-tag.sh
+                    export VERSION=`./version-tag.sh`
+                    git tag -a $VERSION -m "version: $VERSION"
+            - run:
+                name: Push tag
+                command: |
+                    git push "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/iLeonelPerea/devops.ci-cd-ct.git" --tags
+    "release":
+        description: Create a publish a new release.
+        executor: github-release/default
+        steps:
+            - checkout
+            - run:
+                name: Export environment variables
+                command: |
+                    export VER=$(git tag | sort -V | tail -1)
+                    export DESCRI=`cat release_description.txt`
+
+                    echo "export VERSION=${VER}" >> $BASH_ENV
+                    echo "export DESCR='${DESCRI}'" >> $BASH_ENV
+            - github-release/create:
+                tag: $VERSION
+                title: version $VERSION
+                description: $DESCR

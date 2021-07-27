@@ -1,14 +1,3 @@
-# terraform {
-#   backend "remote" {
-#     organization = "DoU-TFE"
-#
-#     workspaces {
-#       prefix = "singularity-"
-#     }
-#   }
-# }
-
-
 terraform {
   required_providers {
     aws = {
