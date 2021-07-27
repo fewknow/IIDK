@@ -1,0 +1,40 @@
+---
+
+- name: Copy nomad agent configuration files as .tmp
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: docker-config.json, destination: /etc/docker/config.json }
+
+- name: check go version
+  command: go version
+  register: result
+  changed_when: no
+  ignore_errors: true
+
+- set_fact:
+    go_path: "{{ lookup('env', 'GOPATH') | default(ansible_env.HOME+'/go', true) }}"
+  when: not result|failed
+
+- name: Set GOPATH for all users
+  copy:
+    src: go-path.sh
+    dest: /etc/profile.d
+  when: set_go_path
+
+- name: go get gogs
+  shell: go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
+  register: gogs
+  when: not result|failed
+
+# Run `install` target as root
+- name: Run Make on Go binary for ecr login
+  make:
+    chdir: ~/go/src/github.com/awslabs/amazon-ecr-credential-helper
+
+
+
+- name: Move ecr login Binary
+  shell: mv ~/go/src/github.com/awslabs/amazon-ecr-credential-helper/bin/local/docker-credential-ecr-login /usr/bin/docker-credential-ecr-login
+  become_user: root

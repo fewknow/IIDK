@@ -1,0 +1,10 @@
+---
+
+- include: not_bin.yml
+  when: not bin
+
+- include: ubuntu_14.yml
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "14" and bin
+
+- include: ubuntu_18.yml
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "18" and bin

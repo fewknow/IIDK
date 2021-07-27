@@ -1,0 +1,29 @@
+---
+- name: Install required packages
+  apt:
+    pkg: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ packages.install }}"
+
+
+- name: Install required npm packages
+  npm:
+    name: "{{ item }}"
+    global: yes
+    state: present
+  with_items: "{{ npm.install }}"
+
+- name: Update /etc/hosts files
+  copy:
+    src: hosts
+    dest: /etc/hosts
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+
+- name: Create build user
+  user:
+    name: build

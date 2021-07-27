@@ -1,0 +1,20 @@
+---
+datadog_enabled: no
+
+# default datadog.conf options
+datadog_config: {}
+
+# default checks enabled
+datadog_checks: {}
+# process checks
+datadog_process_checks:
+  - { name: ssh, search_string: ['ssh', 'sshd'] }
+
+# default user/group
+datadog_user: dd-agent
+datadog_group: root
+
+# default apt repo
+datadog_apt_repo: "deb http://apt.datadoghq.com/ stable 6"
+
+datadog_api_key: 0aa4680099c20bf6b5a85750dc4e2d5a

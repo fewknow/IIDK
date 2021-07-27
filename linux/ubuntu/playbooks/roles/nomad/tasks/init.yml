@@ -1,0 +1,42 @@
+---
+
+- name: Copy nomad Upstart script
+  template:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: roles/nomad/files/nomad.service, destination: /etc/systemd/system }
+  when: not container
+
+
+- name: Add enable nomad and start service
+  service:
+    name: nomad
+    state: started
+    enabled: yes
+  ignore_errors: yes
+  when: not container
+
+- name: Create directory /etc/service/nomad
+  file: path=/etc/service/nomad state=directory
+  when: container
+
+- name: Copy nomad runit
+  copy:
+    src: run
+    dest: /etc/service/nomad
+    mode: 0644
+  when: container
+
+- name: Create my_init directory for container
+  file:
+    state: directory
+    path: /etc/my_init.d/
+  when: container
+
+- name: Move init scripts for nomad on container
+  copy:
+    src: 00_container_nomad_agent.sh
+    dest: /etc/my_init.d/
+    mode: 0755
+  when: container

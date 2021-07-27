@@ -1,0 +1,7 @@
+---
+- name: Install postgres client
+  apt:
+    pkg: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ packages.install }}"

@@ -1,0 +1,32 @@
+packages:
+  install:
+    - build-essential
+    - ca-certificates
+    - curl
+    - git
+    - ntp
+    - jq
+    - procps
+    - software-properties-common
+    - sysstat
+    - python-pip
+    - unzip
+    - vim
+    - zip
+    - golang-go
+
+  purge:
+    - apport
+    - nano
+    - whoopsie
+    - pip
+
+pip:
+  install:
+    - awscli
+    - boto3
+
+
+vagrant: "{{ lookup('env','VAGRANT') }}"
+container: true
+python_version: 2.7.14

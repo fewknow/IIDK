@@ -1,0 +1,21 @@
+packages:
+  install:
+    - svn
+    - postgresql-9.5
+    - openjdk-8-jdk
+
+  purge:
+    - apport
+    - nano
+    - whoopsie
+
+pip:
+  install:
+    - awscli
+    - boto
+    - boto3
+npm:
+  install:
+    - grunt
+    - grunt-cli
+    - typescript

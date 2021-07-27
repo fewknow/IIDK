@@ -1,0 +1,17 @@
+---
+- name: Copy integration templates
+  copy:
+    src: '{{ item }}'
+    dest: '{{ consul_template_path }}'
+  with_items:
+    - logstash.conf.ctmpl
+
+- name: Copy Consul Template configuration
+  template:
+    src: consul-template.conf.j2
+    dest: /etc/consul-template.d/consul-template.conf
+
+- name: Copy nginx index template
+  copy:
+    src: nginx-index-template.json
+    dest: /etc/logstash/conf.d/nginx-index-template.json

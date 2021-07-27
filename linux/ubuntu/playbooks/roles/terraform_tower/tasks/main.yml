@@ -1,0 +1,24 @@
+- name: Install terraform
+  get_url:
+    url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+    dest: /tmp
+    mode: 0755
+    validate_certs: false
+
+- name: Unzip terraform
+  shell:  |
+    cd /tmp
+    unzip terraform_{{ terraform_version }}_linux_amd64.zip
+    mv terraform /usr/local/bin/terraform
+
+- name: Create .aws directory
+  shell:  |
+    cd /root
+    mkdir .aws
+    chmod 0755 .aws
+
+- name: Copy credential file
+  copy:
+    src: credentials
+    dest: /root/.aws/credentials
+    mode: 0600

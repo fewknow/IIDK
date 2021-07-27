@@ -1,0 +1,56 @@
+---
+
+- name: Create directory /etc/systemd/system-shutdown
+  file:
+    path: /etc/systemd/system-shutdown
+    state: directory
+  when: not container
+
+- name: Copy Consul systemd script
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: roles/consul/files/consul.service, destination: /etc/systemd/system }
+    - { source: roles/consul/files/consul-leave.service, destination: /etc/systemd/system }
+  when: not container
+
+- name: Add enable consul and start service
+  systemd:
+    name: consul
+    state: stopped
+    enabled: yes
+  ignore_errors: yes
+  when: not container and vagrant
+
+- name: Add enable consul-leave and start service
+  systemd:
+    name: consul-leave
+    state: started
+    enabled: yes
+  ignore_errors: yes
+  when: not container and vagrant
+
+- name: Create directory /etc/service/consul
+  file: path=/etc/service/consul state=directory
+  when: container
+
+- name: Copy Consul runit
+  copy:
+    src: run
+    dest: /etc/service/consul
+    mode: 0644
+  when: container
+
+- name: Create my_init directory for container
+  file:
+    state: directory
+    path: /etc/my_init.d/
+  when: container
+
+- name: Move init scripts for consul on container
+  copy:
+    src: 00_container_consul_agent.sh
+    dest: /etc/my_init.d/
+    mode: 0755
+  when: container

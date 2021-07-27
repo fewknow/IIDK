@@ -1,0 +1,20 @@
+---
+
+- name: Create directory
+  file:
+    path: /opt/datadog
+    state: directory
+    mode: 0755
+
+- name: Install datadog java client
+  get_url:
+    url: https://search.maven.org/classic/remote_content?g=com.datadoghq&a=dd-java-agent&v=LATEST
+    dest: /opt/datadog/dd-java-agent.jar
+    mode: 0755
+    owner: root
+    group: root
+    directory_mode: yes
+    validate_certs: no
+
+- name: Set permissions for data dog
+  shell: chmod -R 755 /opt/datadog

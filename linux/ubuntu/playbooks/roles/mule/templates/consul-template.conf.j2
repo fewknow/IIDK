@@ -1,0 +1,31 @@
+consul {
+  address = "127.0.0.1:8500"
+
+  retry {
+    enabled = true
+    attempts = 12
+    backoff = "250ms"
+    max_backoff = "1m"
+  }
+}
+
+template {
+  source = "{{ consul_template_path }}/filebeat.yml.ctmpl"
+  destination = "{{ filebeat_path }}/filebeat.yml"
+
+  command = "sudo systemctl restart filebeat"
+}
+
+template {
+  source = "{{ consul_template_path }}/environment.ctmpl"
+  destination = "/etc/environment"
+
+  command = "sudo systemctl restart mule"
+}
+
+template {
+  source = "/etc/consul-template.d/wrapper.conf.ctmpl"
+  destination = "/opt/mule/conf/wrapper.conf"
+
+  command = "sudo systemctl restart mule"
+}

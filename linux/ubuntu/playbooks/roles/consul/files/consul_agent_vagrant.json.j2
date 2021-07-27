@@ -1,0 +1,18 @@
+{
+  "node_name": "{{ ansible_hostname }}",
+
+  "data_dir": "/opt/consul/data",
+
+  {% if vagrant is defined %}
+  "bind_addr": "<needed>",
+  {% endif %}
+  "leave_on_terminate": false,
+  "skip_leave_on_interrupt": true,
+
+  "encrypt": "Dt3P9SpKGAR/DIUN1cDirg==",
+  "start_join": ["192.168.4.22"],
+
+  "datacenter": "vagrant",
+  "server": false,
+  "log_level": "TRACE"
+}

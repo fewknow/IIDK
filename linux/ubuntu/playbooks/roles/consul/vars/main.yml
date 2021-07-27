@@ -1,0 +1,7 @@
+consul:
+  version: 1.6.1
+  deploy_dir: /usr/bin
+  config_dir: /etc/consul.d
+  app_dir: /opt/consul
+
+config_file: consul

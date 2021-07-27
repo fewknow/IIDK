@@ -1,0 +1,6 @@
+#PATH was already here and I didn't want to overwrite it on the server.
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+{{ range  $pairs := tree "mule/cluster/" | byKey }}
+{{ range $pair := $pairs }}
+{{ .Key | toUpper }}={{ .Value }}
+{{ end }}{{ end }}

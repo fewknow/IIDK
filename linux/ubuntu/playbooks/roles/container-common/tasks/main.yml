@@ -1,0 +1,19 @@
+---
+- name: Install required packages
+  apt:
+    pkg: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ packages.install }}"
+
+- name: Purge unwanted packages
+  apt:
+    pkg: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items: "{{ packages.purge }}"
+
+
+- name: Install required python packages
+  shell: pip install "{{ item }}"
+  with_items: "{{ pip.install }}"

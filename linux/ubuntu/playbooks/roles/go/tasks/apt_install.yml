@@ -1,0 +1,6 @@
+---
+
+- name: Install GO
+  apt:
+    name: golang
+    update_cache: yes

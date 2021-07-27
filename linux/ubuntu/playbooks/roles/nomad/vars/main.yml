@@ -1,0 +1,7 @@
+nomad:
+  version: 0.9.4
+  deploy_dir: /usr/bin
+  config_dir: /etc/nomad.d
+  app_dir: /opt/nomad
+
+config_file: nomad

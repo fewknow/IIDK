@@ -1,0 +1,45 @@
+---
+- name: Download Consul
+  get_url:
+    url: https://releases.hashicorp.com/consul/{{ consul.version }}/consul_{{ consul.version }}_linux_amd64.zip
+    dest: /tmp/consul.zip
+    validate_certs: false
+
+- name: Install Consul
+  unarchive:
+    src: /tmp/consul.zip
+    dest: "{{ consul.deploy_dir }}"
+    copy: no
+
+- name: Set permissions on Consul
+  file:
+    path: "{{ consul.deploy_dir }}/consul"
+
+- name: Create consul group
+  group:
+    name: consul
+    state: present
+
+- name: Create consul user
+  user:
+    name: consul
+    group: consul
+    groups: root
+    comment: User for consul service
+
+- name: Create Consul directories
+  file:
+    state: directory
+    owner: consul
+    group: consul
+    path: "{{ item.destination }}"
+  with_items:
+    - { destination: "{{ consul.config_dir }}"}
+    - { destination: "{{ consul.app_dir }}" }
+
+- name: Create Consul data directory
+  file:
+    state: directory
+    owner: consul
+    group: consul
+    path: "{{ consul.app_dir }}/data"

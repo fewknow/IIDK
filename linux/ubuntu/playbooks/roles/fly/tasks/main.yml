@@ -1,0 +1,6 @@
+---
+- name: Try to get fly cli from web url
+  get_url:
+    url: http://concourseci.mgmt.fewknow.net/api/v1/cli?arch=amd64&platform=linux
+    dest: /usr/local/bin
+    mode: 755

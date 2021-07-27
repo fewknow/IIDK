@@ -1,0 +1,71 @@
+---
+- name: Install apt-transport-https package
+  apt:
+    name: apt-transport-https
+    state: latest
+
+- name: Add datadog repository key
+  apt_key:
+    id: 382E94DE
+    keyserver: hkp://keyserver.ubuntu.com:80
+    state: present
+
+- name: Add the datadog repository
+  apt_repository:
+    repo: '{{ datadog_apt_repo }}'
+    state: present
+    update_cache: yes
+
+- name: Install the datadog-agent
+  apt:
+    name: datadog-agent
+    state: latest
+
+- name: Create main Datadog agent configuration file
+  template:
+    src: datadog.yaml.j2
+    dest: /etc/datadog-agent/datadog.yaml
+    owner: '{{ datadog_user }}'
+    group: '{{ datadog_group }}'
+  notify: restart_datadog-agent
+
+- name: Add the process.yaml check
+  template:
+    src: process.yaml.j2
+    dest: /etc/datadog-agent/conf.d/process.yaml
+  when: datadog_process_checks is defined
+  notify: restart_datadog-agent
+
+- name: Enable the datadog-agent if datadog_enabled is yes
+  service:
+    name: datadog-agent
+    state: started
+    enabled: yes
+
+- name: Copy service specific check {{ service }}
+  shell:  |
+    mv /etc/datadog-agent/conf.d/{{ service }}.d/conf.yaml.example /etc/datadog-agent/conf.d/{{ service }}.d/conf.yaml
+    service datadog-agent restart
+  notify: restart_datadog-agent
+  when: (service != 'vault')
+
+- name: Copy vault datadog configuration
+  copy:
+    src: files/{{ service }}.yaml
+    dest: /etc/datadog-agent/conf.d/{{ service }}.d/conf.yaml
+  when: (service == 'vault')
+
+- name: Clean artifact path
+  file:
+    state: absent
+    path: /etc/datadog-agent/conf.d/disk.d/conf.yaml.default
+
+- name: Copy disk check configuration
+  copy:
+    src: files/disk.yaml
+    dest: /etc/datadog-agent/conf.d/disk.d/conf.yaml
+
+- name: restart datadog-agent
+  service:
+    name: datadog-agent
+    state: restarted

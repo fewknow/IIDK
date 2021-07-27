@@ -1,0 +1,14 @@
+[Unit]
+Description=MuleSoft Mule ESB Application Container
+After=network.target syslog.target
+[Service]
+EnvironmentFile=/etc/environment
+Type=forking
+ExecStart=/opt/mule/bin/mule start
+ExecStop=/opt/mule/bin/mule stop
+User=mule
+Group=mule
+LimitNOFILE=32768
+TasksMax=infinity
+[Install]
+WantedBy=multi-user.target

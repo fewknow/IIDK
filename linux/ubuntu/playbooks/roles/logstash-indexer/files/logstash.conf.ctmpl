@@ -1,0 +1,89 @@
+input {
+   stdin { }
+  gelf {
+    host => "0.0.0.0"
+    port => 12201
+  }
+
+  udp {
+    codec => json
+    port => 5001
+  }
+
+  tcp {
+    port => 5000
+    codec => json
+  }
+
+  beats {
+    port => 5044
+    client_inactivity_timeout => 600
+  }
+
+  http {
+    port => 8000
+    type => "elb-healthcheck"
+  }
+
+}
+
+filter {
+  if [type] == "elb-healthcheck" {
+    drop { }
+  }
+  else if "nginx" in [command] {
+    grok {
+      match => { "message" => '{{ key "logstash/grok_patterns/nginx" }}' }
+      add_tag => [ "parsed_nginx" ]
+    }
+  }
+
+}
+
+
+output {
+
+    if 'test' in [tags]{
+        elasticsearch {
+            hosts     => ["%% elastic_url %%"]
+            index => "test-%{+YYYY.MM.dd}"
+        }
+    }
+{{ range  $pairs := tree "logstash/configurations/" | byKey }}
+{{ range $pair := $pairs }}
+
+    else if '{{ .Key }}' in [tags]{
+        elasticsearch {
+            hosts     => ["%% elastic_url %%"]
+            index => "{{ .Value }}-%{+YYYY.MM.dd}"
+        }
+    }
+{{ end }}{{ end }}
+    else if 'parsed_nginx' in [tags] {
+      elasticsearch {
+            hosts     => ["%% elastic_url %%"]
+            index => "nginx-%{+YYYY.MM.dd}"
+            manage_template => true
+            template => "/etc/logstash/conf.d/nginx-index-template.json"
+            template_name => "nginx"
+            template_overwrite => true
+        }
+    }
+    else if 'mule_cluster' in [tags]{
+        elasticsearch {
+          hosts     => ["%% elastic_url %%"]
+          index => "mule_cluster-%{+YYYY.MM.dd}"
+        }
+    }
+      else {
+        elasticsearch {
+            hosts     => ["%% elastic_url %%"]
+        }
+    }
+}
+
+filter {
+  mutate {
+    remove_field => [ "[host]" ]
+  }
+}

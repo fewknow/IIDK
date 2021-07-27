@@ -1,0 +1,13 @@
+filebeat:
+  inputs:
+    - type: log
+      paths:
+        - /var/log/*.log
+      tags: [jasper]
+
+  processors:
+     - drop_fields:
+       fields: ["host"]
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["logstash.{{ env }}.fewknow.net:5044"]

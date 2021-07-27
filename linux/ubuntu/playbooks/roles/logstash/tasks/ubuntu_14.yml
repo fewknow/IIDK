@@ -1,0 +1,8 @@
+- name: Overrid startup.options file.
+  copy:
+    src: files/startup.options
+    dest: /opt/logstash/config/startup.options
+    force: yes
+
+- name : Install system upstart for logstash
+  shell: cd /opt/logstash/bin && ./system-install

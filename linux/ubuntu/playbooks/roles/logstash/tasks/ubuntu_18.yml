@@ -1,0 +1,6 @@
+- name: Copy logstash servie script
+  template:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: roles/logstash/files/logstash.service, destination: /etc/systemd/system }

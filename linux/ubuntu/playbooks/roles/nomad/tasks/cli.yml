@@ -1,0 +1,16 @@
+---
+- name: Download nomad
+  get_url:
+    url: https://releases.hashicorp.com/nomad/{{ nomad.version }}/nomad_{{ nomad.version }}_linux_amd64.zip
+    dest: /tmp/nomad.zip
+    validate_certs: false
+
+- name: Install nomad
+  unarchive:
+    src: /tmp/nomad.zip
+    dest: "{{ nomad.deploy_dir }}"
+    copy: no
+
+- name: Set permissions on nomad
+  file:
+    path: "{{ nomad.deploy_dir }}/nomad"

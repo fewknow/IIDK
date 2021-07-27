@@ -1,0 +1,5 @@
+---
+- name: Enable ntp
+  service:
+    name: ntp
+    enabled: yes

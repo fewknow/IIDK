@@ -1,0 +1,12 @@
+---
+- name: Copy over App Dynamics
+  copy:
+    src: files/appagent
+    dest: /opt/app_dynamics/
+    mode: 0755
+    owner: root
+    group: root
+    directory_mode: yes
+
+- name: Set permissions for app dynamics
+  shell: chmod -R 755 /opt/app_dynamics

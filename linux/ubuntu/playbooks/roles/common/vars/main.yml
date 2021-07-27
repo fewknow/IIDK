@@ -1,0 +1,42 @@
+packages:
+  install:
+    - build-essential
+    - ca-certificates
+    - curl
+    - git
+    - jq
+    - net-tools
+    - ntp
+    - python-pip
+    - procps
+    - software-properties-common
+    - sysstat
+    - unzip
+    - vim
+    - zip
+    - libssl-dev
+    - checkinstall
+    - libreadline-gplv2-dev
+    - libncursesw5-dev
+    - libssl-dev
+    - libsqlite3-dev
+    - tk-dev
+    - libgdbm-dev
+    - libc6-dev
+    - libbz2-dev
+
+  purge:
+    - apport
+    - nano
+    - whoopsie
+
+pip:
+  install:
+    - awscli
+    - boto
+    - boto3
+
+
+vagrant: "{{ lookup('env','VAGRANT') }}"
+container: false
+python_version: 2.7.14

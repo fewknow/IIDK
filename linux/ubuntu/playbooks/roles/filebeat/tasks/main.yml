@@ -1,0 +1,29 @@
+---
+
+- name : Download filebeat
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ version }}-amd64.deb
+    dest: /tmp/filebeat-{{ version }}-amd64.deb
+    validate_certs: no
+
+- name: Install filebeat
+  apt:
+    deb: /tmp/filebeat-{{ version }}-amd64.deb
+
+- name: Copy over config file from "{{ service }}"
+  copy:
+    src: "{{playbook_dir}}/roles/{{ service }}/files/filebeat.yml"
+    dest: /etc/filebeat/filebeat.yml.tmp
+  when: not consul_template
+
+- name: Copy over config file from "{{ service }}"
+  copy:
+    src: "{{playbook_dir}}/roles/{{ service }}/files/filebeat.yml.ctmpl"
+    dest: /etc/consul-template.d/filebeat.yml.ctmpl.tmp
+  when: consul_template
+
+- name: Enable filebeat on startup
+  service:
+    name: filebeat
+    enabled: yes
+  when: not container or vagrant

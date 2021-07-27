@@ -1,0 +1,56 @@
+
+- name: 'Get Mule {{ version }} tar.gz'
+  aws_s3:
+    bucket: '{{ s3bucket }}'
+    object: /mule/mule-ee-distribution-standalone-{{ version }}.tar.gz
+    dest: /opt/mule-ee-distribution-standalone-{{ version }}.tar.gz
+    mode: get
+
+- name: Unarchive mule-ee-distribution-standalone-{{ version }}.tar.gz
+  unarchive:
+    src: /opt/mule-ee-distribution-standalone-{{ version }}.tar.gz
+    dest: /opt
+    remote_src: yes
+
+- name: Remove mule-ee-distribution-standalone-{{ version }}.tar.gz
+  shell: cd /opt && rm mule-ee-distribution-standalone-{{ version }}.tar.gz
+
+- name: Creating symlink for mule
+  file:
+    src: /opt/mule-enterprise-standalone-{{ version }}
+    dest: /opt/mule
+    state: link
+
+- name: Copy Wrapper conf file to /opt/mule/conf
+  copy:
+    src: files/wrapper.conf
+    dest: /opt/mule/conf/wrapper.conf
+
+- name: add user and group
+  include: users.yml
+
+- name: edit configuration files
+  include: config.yml
+
+- name: Copy mule service file
+  template:
+    src: files/mule.service
+    dest: /etc/systemd/system/mule.service
+
+- name: change file ownership
+  include: chmod.yml
+
+- name: Copy Consul Template configuration
+  template:
+    src: consul-template.conf.j2
+    dest: /etc/consul-template.d/consul-template.conf
+
+- name: Copy over environment template
+  copy:
+    src: files/environment.ctmpl
+    dest: /etc/consul-template.d/environment.ctmpl
+
+- name: Copy over environment template
+  copy:
+    src: files/wrapper.conf.ctmpl
+    dest: /etc/consul-template.d/wrapper.conf.ctmpl

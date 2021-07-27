@@ -1,0 +1,26 @@
+consul {
+  address = "127.0.0.1:8500"
+
+  retry {
+    enabled = true
+    attempts = 12
+    backoff = "250ms"
+    max_backoff = "1m"
+  }
+}
+
+template {
+  multiple {
+    template {
+      source = "{{ consul_template_path }}/dev.tfvars.ctmpl"
+      destination = "~/repos/devops.configs/dev.tfvars"
+    }
+    template {
+      source = "{{ consul_template_path }}/qa.tfvars.ctmpl"
+      destination = "~/repos/devops.configs/qa.tfvars"
+    }
+  }
+
+
+
+}

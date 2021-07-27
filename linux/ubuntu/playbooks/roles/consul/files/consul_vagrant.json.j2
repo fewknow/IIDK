@@ -1,0 +1,20 @@
+{
+  "node_name": "{{ ansible_hostname }}",
+
+  "data_dir": "{{ consul.app_dir }}/data",
+  "ui": true,
+  {% if vagrant is defined %}
+  "client_addr": "192.168.4.22",
+  "bind_addr": "192.168.4.22",
+  {% endif %}
+
+
+  "leave_on_terminate": false,
+  "skip_leave_on_interrupt": true,
+
+  "encrypt": "Dt3P9SpKGAR/DIUN1cDirg==",
+
+  "datacenter": "vagrant",
+  "server": true,
+  "bootstrap" : true
+}

@@ -1,0 +1,38 @@
+---
+- name: Download nomad
+  get_url:
+    url: https://releases.hashicorp.com/nomad/{{ nomad.version }}/nomad_{{ nomad.version }}_linux_amd64.zip
+    dest: /tmp/nomad.zip
+    validate_certs: false
+
+- name: Install nomad
+  unarchive:
+    src: /tmp/nomad.zip
+    dest: "{{ nomad.deploy_dir }}"
+    copy: no
+
+- name: Set permissions on nomad
+  file:
+    path: "{{ nomad.deploy_dir }}/nomad"
+
+- name: Create nomad directories
+  file:
+    state: directory
+    path: "{{ item.destination }}"
+    mode: 0600
+  with_items:
+    - { destination: "{{ nomad.config_dir }}"}
+    - { destination: "{{ nomad.app_dir }}" }
+
+- name: Create nomad data directory
+  file:
+    state: directory
+    path: "{{ nomad.app_dir }}/data"
+
+- name: Copy nomad configuration files as .tmp
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: nomad.conf, destination: /etc/init }
+    - { source: "{{ config_file }}.hcl.tmp" , destination: /etc/nomad.d/ }

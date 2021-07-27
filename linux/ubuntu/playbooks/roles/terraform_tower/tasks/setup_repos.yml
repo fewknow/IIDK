@@ -1,0 +1,25 @@
+---
+
+- name: Installing keyring
+  apt:
+    name: libgnome-keyring-dev
+    state: present
+
+- name: Setup git user
+  shell:  |
+    sudo make --directory=/usr/share/doc/git/contrib/credential/gnome-keyring
+    git config --global credential.htlper /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+
+- name: Create directory structure for repos
+  shell:  |
+    sudo mkdir /home/terraform/repos
+    sudo chown terraform:terraform /home/terraform/repos
+    sudo chmod 755 /home/terraform/repos
+
+- name: cd to repos
+  shell: cd /home/terraform/repos
+
+- name: Get repos for Github
+  command:  |
+    git clone {{ item }}
+  with_items: "{{ repos.name }}"
