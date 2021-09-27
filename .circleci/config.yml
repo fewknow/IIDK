@@ -3,7 +3,7 @@ workflows:
     devops:
         jobs:
             - "build":
-                context: fewknow
+                context: WAAS
                 filters:
                     branches:
                         only: main
